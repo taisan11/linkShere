@@ -68,9 +68,12 @@ app.get('/private', basicAuth({
     return (authenticate(username, password));
   }}),async (c) => {
   //@ts-ignore
-  const url = await db.select().from(urls).where(eq(urls.parm,String(c.get("username"))))
+  const privateurl = await db.select().from(urls).where(eq(urls.parm,String(c.get("username"))))
+  const publicurl = await db.select().from(urls).where(eq(urls.parm,"public"))
+  const url = publicurl.concat(privateurl)
   return c.render(<div>
   <h2>private Links</h2>
+  <p>your {c.get("username")}</p>
   <table>
     <thead>
       <tr>

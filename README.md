@@ -1,11 +1,1 @@
-To install dependencies:
-```sh
-bun install
-```
-
-To run:
-```sh
-bun run dev
-```
-
-open http://localhost:3000
+ios shortcut:[here](https://www.icloud.com/shortcuts/998a68bcf8534be39f961d610ca779b1)
