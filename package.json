@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "wrangler dev src/index.ts",
     "deploy": "wrangler deploy --minify src/index.ts",
-    "db:u":"rm -rf migrations && bun run db:g && bun run db:m&& bun run db:p&& bun run db:m2",
+    "db:u":"rm -rf migrations && rm -rf .wrangler && bun run db:g && bun run db:m&& bun run db:p&& bun run db:m2",
     "db:g":"drizzle-kit generate",
     "db:m":"drizzle-kit migrate",
     "db:p":"drizzle-kit push",
