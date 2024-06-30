@@ -60,6 +60,7 @@ app.get('/', async (c) => {
 app.get('/private', basicAuth({
   verifyUser: (username, password, c) => {
     c.set("username",username)
+    console.log(users.includes({username:username,password:password}))
     return (users.includes({username:username,password:password}))
   }}),async (c) => {
   //@ts-ignore
