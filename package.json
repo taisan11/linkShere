@@ -1,7 +1,7 @@
 {
   "name": ".",
   "scripts": {
-    "dev": "bun run --hot src/index.ts",
+    "dev": "bun run --hot src/index.tsx",
     "drizzle-kit": "drizzle-kit",
     "db:init": "rm -rf ./drizzle/ sqlite.db && bun run db:generato && bun run db:migrate && bun run db:genseed",
     "db:generato": "drizzle-kit generate",

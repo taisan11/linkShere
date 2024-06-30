@@ -1,11 +1,16 @@
 import { Hono } from 'hono'
 import { jsxRenderer } from 'hono/jsx-renderer'
+import { logger } from 'hono/logger';
+import { basicAuth } from 'hono/basic-auth';
 
 import { eq } from "drizzle-orm";
 import { db } from "./db";
 import { urls } from './schema';
+import { users } from './env';
 
 const app = new Hono()
+
+app.use(logger())
 
 app.get(
   "*",
@@ -36,17 +41,15 @@ app.get('/', async (c) => {
       <tr>
         <th>URL</th>
         <th>description</th>
-        <th>createdAt</th>
         <th>updatedAt</th>
       </tr>
     </thead>
     <tbody>
       {url!.map((u) => (
         <tr>
-          <td>{u.url}</td>
+          <td><a href={u.url}>{u.url}</a></td>
           <td>{u.description}</td>
-          <td>{u.createdAt}</td>
-          <td>{u.updatedAt}</td>
+          <td>{new Date(u.updatedAt).toLocaleString('ja-JP')}</td>
         </tr>
       ))}
     </tbody>
@@ -54,18 +57,48 @@ app.get('/', async (c) => {
 </div>, { title: 'リンクを共有' })
 })
 
+app.get('/private', basicAuth({
+  verifyUser: (username, password, c) => {
+    c.set("username",username)
+    return (users.includes({username:username,password:password}))
+  }}),async (c) => {
+  //@ts-ignore
+  const url = await db.select().from(urls).where(eq(urls.parm,String(c.get("username"))))
+  return c.render(<div>
+  <h2>private Links</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>URL</th>
+        <th>description</th>
+        <th>updatedAt</th>
+      </tr>
+    </thead>
+    <tbody>
+      {url!.map((u) => (
+        <tr>
+          <td><a href={u.url}>{u.url}</a></td>
+          <td>{u.description}</td>
+          <td>{new Date(u.updatedAt).toLocaleString('ja-JP')}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>, { title: 'リンクを共有' })
+  })
+
 app.post('url', async (c) => {
   //@ts-ignore
-  if (c.req.header("nb6rytc7tgn789") !== c.env.Token) {
-    return c.text('Invalid Token!')
+  if (c.req.header("token") !== "test") {
+    console.log(c.req.header("token"))
+    return c.text('Invalid Token!', 401)
   }
-  const body = await c.req.json()
   await db.insert(urls).values({
-    url: body.url,
-    description: body.description,
+    url:  String(await c.req.header("url")),
+    description: await c.req.header("description"),
     createdAt: new Date().toString(),
     updatedAt: new Date().toString(),
-    parm: body.parm
+    parm: await c.req.header("parm")
   })
   return c.text('Success!')
 })
