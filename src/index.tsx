@@ -57,11 +57,15 @@ app.get('/', async (c) => {
 </div>, { title: 'リンクを共有' })
 })
 
+function authenticate(inputUsername:string, inputPassword:string) {
+  return users.some(user => user.username === inputUsername && user.password === inputPassword);
+}
+
 app.get('/private', basicAuth({
   verifyUser: (username, password, c) => {
     c.set("username",username)
     console.log(users.includes({username:username,password:password}))
-    return (users.includes({username:username,password:password}))
+    return (authenticate(username, password));
   }}),async (c) => {
   //@ts-ignore
   const url = await db.select().from(urls).where(eq(urls.parm,String(c.get("username"))))
