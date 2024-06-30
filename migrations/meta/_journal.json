@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1719709241811,
+      "tag": "0000_reflective_thanos",
+      "breakpoints": true
+    }
+  ]
+}

@@ -2,7 +2,13 @@
   "name": ".",
   "scripts": {
     "dev": "wrangler dev src/index.ts",
-    "deploy": "wrangler deploy --minify src/index.ts"
+    "deploy": "wrangler deploy --minify src/index.ts",
+    "db:u":"rm -rf migrations && bun run db:g && bun run db:m&& bun run db:p&& bun run db:m2",
+    "db:g":"drizzle-kit generate",
+    "db:m":"drizzle-kit migrate",
+    "db:p":"drizzle-kit push",
+    "db:s":"drizzle-kit studio",
+    "db:m2":"wrangler d1 migrations apply DB"
   },
   "dependencies": {
     "drizzle-orm": "^0.31.2",
